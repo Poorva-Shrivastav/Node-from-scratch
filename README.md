@@ -89,4 +89,9 @@ Callback queues:
   - proceeds to check queue
 
 - microtask cbs are executed before check cb. If the check cb has any microtask code, the control moves from check queue to microtask queue as soon as the callback is triggered, and returns back to check queue after the execution is completed in microtask queue. Refer: queues_execution.js.
--
+
+Cluster Threads module - can be used to run multiple instances of Node.js in multiple threads to distribute work load
+
+Worker Thread module - allows running of multiple application threads within a single Node.js instance
+
+- Deploy : fly.io or render.com
