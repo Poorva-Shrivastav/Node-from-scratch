@@ -95,3 +95,33 @@ Cluster Threads module - can be used to run multiple instances of Node.js in mul
 Worker Thread module - allows running of multiple application threads within a single Node.js instance
 
 - Deploy : fly.io or render.com
+
+----------------------------------EXPRESS--------------------------------
+Routing:
+
+1. We can create dynamic urls by passsing one or more params
+2. We collect the data using req.params.<variable_name>
+
+/search/:key([0-9]{4}) -> key can be only numbers with 4 digits validation
+/search/:key([0-9]{4}) -> key can be only alphabets with 5 digits validation
+
+- wildcard routes - user enters the route that doesn't match our criteria
+  router.get("\*", (req, res) => {
+  let resObj = {
+  statusCode: 404,
+  statusMessage: "URL not found",
+  };
+  res.send(resObj );
+  });
+
+Middleware: function that has access to req, res, and next middleware function
+
+When UI makes an API call, before reaching to the server, it first goes to middleware
+UI -> Request -> API -> Middleware -> server
+
+1. Logging the correct data -> Most common usecase
+2. Authentication
+3. Body parsing
+4. Sanitizing
+
+!Ordering of the methods is most crucial.
