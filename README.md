@@ -96,7 +96,8 @@ Worker Thread module - allows running of multiple application threads within a s
 
 - Deploy : fly.io or render.com
 
-----------------------------------EXPRESS--------------------------------
+# ----------------------------------EXPRESS--------------------------------
+
 Routing:
 
 1. We can create dynamic urls by passsing one or more params
@@ -114,14 +115,23 @@ Routing:
   res.send(resObj );
   });
 
-Middleware: function that has access to req, res, and next middleware function
+# Middleware: function that has access to req, res, and next middleware function
 
 When UI makes an API call, before reaching to the server, it first goes to middleware
 UI -> Request -> API -> Middleware -> server
 
 1. Logging the correct data -> Most common usecase
 2. Authentication
-3. Body parsing
+3. Body parsing - check is all the required data is present
 4. Sanitizing
 
-!Ordering of the methods is most crucial.
+!Ordering of the methods/functions is most crucial.
+
+# Query String:
+
+localhost:3000/products?key=value&key2=value2 - req.query
+
+PUT - update the entire details about the user in the db.
+PATCH - update only some information, e.g. address, everything else remains the same.
+
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
