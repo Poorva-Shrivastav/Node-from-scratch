@@ -125,7 +125,9 @@ UI -> Request -> API -> Middleware -> server
 3. Body parsing - check is all the required data is present
 4. Sanitizing
 
-!Ordering of the methods/functions is most crucial.
+Ordering of the methods/functions is most crucial.
+
+!!There's no way direct way we can pass data from one middleware to the other, but we can attach properties to the req obj dynamically
 
 # Query String:
 

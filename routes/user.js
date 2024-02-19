@@ -3,6 +3,20 @@ const router = express.Router();
 
 const bcrypt = require("bcrypt");
 
+const middlewareResolveIndexByUserId = (req, res, next) => {
+  const {
+    body,
+    params: { id },
+  } = req;
+  const parsedId = parseInt(id);
+  if (isNaN(parsedId)) return res.sendStatus(400);
+
+  const findUserIndex = users.findIndex((user) => user.id === parsedId);
+  if (findUserIndex === -1) return res.sendStatus(400);
+  req.findUserIndex = findUserIndex; // There's no way direct way we can pass data from one middleware to the other, but we can attach properties to the req obj dynamically
+  next();
+};
+
 // /users/all-users
 const users = [
   { id: 1, name: "PJ", displayName: "PJ" },
@@ -24,16 +38,12 @@ router.get("/", (req, res) => {
 
 // /users/user-details
 
-router.get("/:id", (req, res) => {
-  const parseId = parseInt(req.params.id);
-  if (isNaN(parseId)) {
-    return res.status(400).send("Bad request - " + req.params.id);
-  }
-  const findUser = users.find((user) => user.id === parseId);
-  console.log(findUser);
-  if (!findUser) return res.sendStatus(404);
+router.get("/:id", middlewareResolveIndexByUserId, (req, res) => {
+  const { findUserIndex } = req;
 
-  return res.send("Found user: " + findUser);
+  const findUser = users.find((user) => user.id === users[findUserIndex].id);
+  if (!findUser) return res.sendStatus(404);
+  return res.send(findUser);
 });
 
 router.post("/", (req, res) => {
@@ -41,44 +51,20 @@ router.post("/", (req, res) => {
   res.sendStatus(201);
 });
 
-router.put("/:id", (req, res) => {
-  const {
-    body,
-    params: { id },
-  } = req;
-  const parsedId = parseInt(id);
-  if (isNaN(parsedId)) return res.sendStatus(400);
-
-  const findUserIndex = users.findIndex((user) => user.id === parsedId);
-  if (findUserIndex === -1) return res.sendStatus(400);
-
-  users[findUserIndex] = { id: parsedId, ...body };
+router.put("/:id", middlewareResolveIndexByUserId, (req, res) => {
+  const { body, findUserIndex } = req;
+  users[findUserIndex] = { id: users[findUserIndex].id, ...body };
   res.sendStatus(200);
 });
 
-router.patch("/:id", (req, res) => {
-  const {
-    body,
-    params: { id },
-  } = req;
-  const parsedId = parseInt(id);
-  if (isNaN(parsedId)) return res.sendStatus(400);
-  console.log(users);
-  const findUserIndex = users.findIndex((user) => user.id === parsedId);
-  if (findUserIndex === -1) return res.sendStatus(404);
-
+router.patch("/:id", middlewareResolveIndexByUserId, (req, res) => {
+  const { body, findUserIndex } = req;
   users[findUserIndex] = { ...users[findUserIndex], ...body }; //taking all the existing user data in the object and updating it with the data sent in the body
   res.sendStatus(204);
 });
 
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-  const parsedId = parseInt(id);
-  if (isNaN(parsedId)) return res.sendStatus(400);
-
-  const findUserIndex = users.findIndex((user) => user.id === parsedId);
-  if (findUserIndex === -1) return res.sendStatus(404);
-
+router.delete("/:id", middlewareResolveIndexByUserId, (req, res) => {
+  const { findUserIndex } = req;
   users.splice(findUserIndex, 1);
   console.log(users);
 
