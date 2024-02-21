@@ -146,3 +146,15 @@ express-validator:
 - matchedData - extracts sanitised data from req body, post validationResult check.
 - checkSchema - Rather than putting all our checks in a single file, we can create a separate file with validation schemas(in our case).
   checkSchema: Creates an express middleware with validations for this schema object, and it can be used directly, without specifying query/body function.
+
+# Cookie - small piece of data that server sends to browser
+
+Web browser stores these cookies
+HTTP request is stateless, server doesn't know who the request is coming from.
+
+# Cookies
+
+Cookie parser - cookies and signed cookies
+
+1. Cookie parser gives us access to req.cookies with an object keyed with the cookie name.
+2. We can also enable signed cookie by passing a secret string
