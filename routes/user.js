@@ -1,7 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const {
+  query,
+  validationResult,
+  body,
+  matchedData,
+  checkSchema,
+} = require("express-validator");
 
-const bcrypt = require("bcrypt");
+const {
+  createUserValidationSchemaPOST,
+  createUserValidationSchemaGET,
+} = require("../utils/validationSchemas");
 
 const middlewareResolveIndexByUserId = (req, res, next) => {
   const {
@@ -27,7 +37,12 @@ const users = [
   { id: 6, name: "JMJ", displayName: "JMJ" },
 ];
 
-router.get("/", (req, res) => {
+router.get("/", checkSchema(createUserValidationSchemaGET), (req, res) => {
+  const result = validationResult(req);
+  console.log(result);
+  if (!result.isEmpty()) {
+    return res.send(users);
+  }
   const { query } = req;
   const { filter, value } = query;
   if (filter && value)
@@ -46,8 +61,13 @@ router.get("/:id", middlewareResolveIndexByUserId, (req, res) => {
   return res.send(findUser);
 });
 
-router.post("/", (req, res) => {
-  users.push({ id: users[users.length - 1].id + 1, ...req.body });
+router.post("/", checkSchema(createUserValidationSchemaPOST), (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(400).send({ errors: result.array() });
+  }
+  const data = matchedData(req);
+  users.push({ id: users[users.length - 1].id + 1, ...data });
   res.sendStatus(201);
 });
 

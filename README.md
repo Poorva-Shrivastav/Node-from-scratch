@@ -137,3 +137,12 @@ PUT - update the entire details about the user in the db.
 PATCH - update only some information, e.g. address, everything else remains the same.
 
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+
+express-validator:
+
+- query function doesn't handle the rejections, we need to do it ourself.
+- body function: works similar to query. parses the payload and gets the errors
+- validationResult - extracts validation errors. This is used to handle rejections from query and body functions. It takes req as arguement and returns result, that has the data of the rejects
+- matchedData - extracts sanitised data from req body, post validationResult check.
+- checkSchema - Rather than putting all our checks in a single file, we can create a separate file with validation schemas(in our case).
+  checkSchema: Creates an express middleware with validations for this schema object, and it can be used directly, without specifying query/body function.
