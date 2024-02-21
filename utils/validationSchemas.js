@@ -24,6 +24,10 @@ const createUserValidationSchemaGET = {
     isString: true,
     notEmpty: { errorMessage: "must not be empty" },
   },
+  value: {
+    isString: true,
+    notEmpty: { errorMessage: "must not be empty" },
+  },
 };
 
 module.exports = {

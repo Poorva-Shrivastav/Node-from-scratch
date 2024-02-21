@@ -3,7 +3,10 @@ const router = express.Router();
 
 // /products
 router.get("/", (req, res) => {
-  res.send("Get req for products");
+  res.send([
+    { id: 1, name: "Milk", brand: "Amul" },
+    { id: 2, name: "Curd", brand: "Milky Mist" },
+  ]);
 });
 
 // /products/get-product-details

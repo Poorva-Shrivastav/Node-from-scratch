@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const users = require("../utils/constants");
+const middlewareResolveIndexByUserId = require("../utils/middlewares");
 const {
   query,
   validationResult,
@@ -13,36 +15,14 @@ const {
   createUserValidationSchemaGET,
 } = require("../utils/validationSchemas");
 
-const middlewareResolveIndexByUserId = (req, res, next) => {
-  const {
-    body,
-    params: { id },
-  } = req;
-  const parsedId = parseInt(id);
-  if (isNaN(parsedId)) return res.sendStatus(400);
-
-  const findUserIndex = users.findIndex((user) => user.id === parsedId);
-  if (findUserIndex === -1) return res.sendStatus(400);
-  req.findUserIndex = findUserIndex; // There's no way direct way we can pass data from one middleware to the other, but we can attach properties to the req obj dynamically
-  next();
-};
-
-// /users/all-users
-const users = [
-  { id: 1, name: "PJ", displayName: "PJ" },
-  { id: 2, name: "MJ", displayName: "MJ" },
-  { id: 3, name: "JJ", displayName: "JJ" },
-  { id: 4, name: "PMJ", displayName: "PMJ" },
-  { id: 5, name: "MMJ", displayName: "MMJ" },
-  { id: 6, name: "JMJ", displayName: "JMJ" },
-];
-
 router.get("/", checkSchema(createUserValidationSchemaGET), (req, res) => {
   const result = validationResult(req);
-  console.log(result);
   if (!result.isEmpty()) {
     return res.send(users);
   }
+  const data = matchedData(req);
+  console.log(data.filter);
+
   const { query } = req;
   const { filter, value } = query;
   if (filter && value)
@@ -50,8 +30,6 @@ router.get("/", checkSchema(createUserValidationSchemaGET), (req, res) => {
 
   return res.send(users);
 });
-
-// /users/user-details
 
 router.get("/:id", middlewareResolveIndexByUserId, (req, res) => {
   const { findUserIndex } = req;
@@ -89,31 +67,6 @@ router.delete("/:id", middlewareResolveIndexByUserId, (req, res) => {
   console.log(users);
 
   res.sendStatus(200);
-});
-// router.get("/search-by-location/:state/:city", (req, res) => {
-//   res.send("User details for " + req.params.state + req.params.city);
-// });
-
-// router.get("/search/:key([0-9]{4})", (req, res) => {
-//   res.send(
-//     "/search/:key([0-9]{4}) -> key can be only numbers with 4 digits validation " +
-//       req.params.key
-//   );
-// });
-
-// router.get("/search-username/:key([a-zA-Z]{5})", (req, res) => {
-//   res.send(
-//     "/search/:key([0-9]{4}) -> key can be only alphabets with 5 digits validation " +
-//       req.params.key
-//   );
-// });
-
-router.get("*", (req, res) => {
-  let resObj = {
-    statusCode: 404,
-    statusMessage: "URL not found",
-  };
-  res.send(resObj);
 });
 
 module.exports = router;
