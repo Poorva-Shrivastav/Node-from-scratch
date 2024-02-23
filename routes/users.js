@@ -18,6 +18,7 @@ const {
 router.get("/", checkSchema(createUserValidationSchemaGET), (req, res) => {
   const result = validationResult(req);
   if (!result.isEmpty()) {
+    console.log(req.session.id);
     return res.send(users);
   }
   const data = matchedData(req);

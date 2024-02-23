@@ -158,3 +158,15 @@ Cookie parser - cookies and signed cookies
 
 1. Cookie parser gives us access to req.cookies with an object keyed with the cookie name.
 2. We can also enable signed cookie by passing a secret string
+
+# Sessions
+
+1. Http is stateless. We don't know who's making the request
+2.
+
+- express-session
+
+1. saveUninitialized - false - we don't want to save data of every user visiting the website
+2. resave - false - forces the session to be saved back to the session store, even if the session was never modified during the request.
+3. req.session.visited = true; Helps is retrieving same session id every time we try to hit the same api
+4. If we set - req.session.user to a user, now the set session id is mapped to this user and the user data comes along with the request body
