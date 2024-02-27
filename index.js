@@ -3,7 +3,7 @@ const app = express();
 const routes = require("./routes/index");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const users = require("./utils/constants");
+const passport = require("passport");
 
 app.use(express.json());
 app.use(cookieParser("signed")); //making the cookies signed
@@ -17,6 +17,10 @@ app.use(
     },
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(routes);
 
 const PORT = process.env.PORT || 8000;
@@ -33,29 +37,6 @@ app.get("/", (req, res) => {
   req.session.visited = true; //remembers the session id
   res.cookie("hello", "world!", { maxAge: 60000 * 60, signed: true }); //1 min - 60000 mil sec
   return res.status(201).send("Welcome");
-});
-
-app.post("/api/auth", (req, res) => {
-  const {
-    body: { displayName, password },
-  } = req;
-
-  const findUser = users.find((user) => user.displayName === displayName);
-  if (!findUser || findUser.password !== password) {
-    return res.sendStatus(401, { msg: "Bad credentials" });
-  }
-  req.session.user = findUser; //the session id belongs to this user
-  return res.sendStatus(200, { user: findUser });
-});
-
-app.get("/api/auth/status", (req, res) => {
-  req.sessionStore.get(req.sessionID, (err, session) => {
-    if (err) throw err;
-    console.log(session);
-  });
-  return req.session.user
-    ? res.status(200).send(req.session.user)
-    : res.status(401).send({ msg: "Not authenticated" });
 });
 
 app.get("*", (req, res) => {

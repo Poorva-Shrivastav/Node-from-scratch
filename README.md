@@ -162,7 +162,6 @@ Cookie parser - cookies and signed cookies
 # Sessions
 
 1. Http is stateless. We don't know who's making the request
-2.
 
 - express-session
 
@@ -170,3 +169,20 @@ Cookie parser - cookies and signed cookies
 2. resave - false - forces the session to be saved back to the session store, even if the session was never modified during the request.
 3. req.session.visited = true; Helps is retrieving same session id every time we try to hit the same api
 4. If we set - req.session.user to a user, now the set session id is mapped to this user and the user data comes along with the request body
+
+# Passport
+
+Passport works really well with express-sessions and many people use both of them together as Passport would map the user with a session id and help to verify if the password is correct.
+
+1. Install passport and passport-local strategy as dependencies. Other strategies - https://www.passportjs.org/packages/
+2. passport.initialize()
+3. passport.session() - This takes care of attaching dynamic user property to request obj called user. Then we can access this user obj from the request body and know whi that user is.
+4. new Strategy({usernameField: "email"}, (username, password, done) => {}) .
+   By specifying this option: {usernameField: "email"}, we are telling passport that we are not using username field but we are using email field. Then passport looks for email field in the request body.
+
+5. passport.serializeUser((user,done)=>{done(user.id)}) -> takes user obj that we validated and stores it in the session data //done takes the arguement that is unique.
+6. passport.deserializeUser((id,done)=>{})
+
+# https://stackoverflow.com/questions/27637609/understanding-passport-serialize-deserialize
+
+The main role of this function is to: Validate user - user exists and password in req body and db are same

@@ -1,5 +1,5 @@
 const createUserValidationSchemaPOST = {
-  name: {
+  username: {
     isLength: {
       options: { min: 5, max: 32 },
       errorMessage: "username must be 5-32 char long",
