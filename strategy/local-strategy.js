@@ -2,17 +2,20 @@ const passport = require("passport");
 const Strategy = require("passport-local");
 const users = require("../utils/constants");
 
+const User = require("../mongoose/schemas/user");
+
 passport.serializeUser((user, done) => {
   console.log("Inside serializeUser");
   console.log(user);
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async (id, done) => {
   console.log("Inside de-serializeUser");
   console.log(id);
   try {
-    const findUser = users.find((user) => user.id === id);
+    // const findUser = users.find((user) => user.id === id);
+    const findUser = await User.findById(id);
     if (!findUser) throw new Error();
     done(null, findUser);
   } catch (err) {
@@ -21,13 +24,11 @@ passport.deserializeUser((id, done) => {
 });
 
 //verify function
-const strategy = new Strategy((username, password, done) => {
-  console.log(`username: ${username}`);
-  console.log(`password: ${password}`);
+const strategy = new Strategy(async (username, password, done) => {
   try {
-    const findUser = users.find((user) => user.username === username);
+    const findUser = await User.findOne({ username });
     if (!findUser) throw new Error("User not found");
-    if (!findUser.password === password) throw new Error("Password not found");
+    if (findUser.password !== password) throw new Error("Bad Credentials");
     done(null, findUser);
   } catch (err) {
     done(err, null);

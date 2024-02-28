@@ -17,6 +17,9 @@ const createUserValidationSchemaPOST = {
       errorMessage: "display name can't be empty",
     },
   },
+  password: {
+    notEmpty: true,
+  },
 };
 
 const createUserValidationSchemaGET = {

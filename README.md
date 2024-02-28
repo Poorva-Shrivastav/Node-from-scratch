@@ -186,3 +186,10 @@ Passport works really well with express-sessions and many people use both of the
 # https://stackoverflow.com/questions/27637609/understanding-passport-serialize-deserialize
 
 The main role of this function is to: Validate user - user exists and password in req body and db are same
+
+# Mongoose
+
+1. Install mongoose
+2. connect mongoose to express with uri
+3. create schemas
+4. connect db to passport

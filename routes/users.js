@@ -15,10 +15,13 @@ const {
   createUserValidationSchemaGET,
 } = require("../utils/validationSchemas");
 
+const User = require("../mongoose/schemas/user");
+
 router.get("/", checkSchema(createUserValidationSchemaGET), (req, res) => {
   const result = validationResult(req);
   if (!result.isEmpty()) {
     console.log(req.session.id);
+
     return res.send(users);
   }
   const data = matchedData(req);
@@ -40,16 +43,34 @@ router.get("/:id", middlewareResolveIndexByUserId, (req, res) => {
   return res.send(findUser);
 });
 
-router.post("/", checkSchema(createUserValidationSchemaPOST), (req, res) => {
-  const result = validationResult(req);
-  if (!result.isEmpty()) {
-    return res.status(400).send({ errors: result.array() });
-  }
-  const data = matchedData(req);
-  users.push({ id: users[users.length - 1].id + 1, ...data });
-  res.sendStatus(201);
-});
+// router.post("/", checkSchema(createUserValidationSchemaPOST), (req, res) => {
+//   const result = validationResult(req);
+//   if (!result.isEmpty()) {
+//     return res.status(400).send({ errors: result.array() });
+//   }
+//   const data = matchedData(req);
+//   users.push({ id: users[users.length - 1].id + 1, ...data });
+//   res.sendStatus(201);
+// });
 
+router.post(
+  "/",
+  checkSchema(createUserValidationSchemaPOST),
+  async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) return res.status(400).send({ err: result.array() });
+    const data = matchedData(req);
+    console.log(data);
+    const newUser = new User(data);
+    try {
+      const savedUser = await newUser.save();
+      return res.status(201).send(savedUser);
+    } catch (err) {
+      console.log(err);
+      return res.sendStatus(401);
+    }
+  }
+);
 router.put("/:id", middlewareResolveIndexByUserId, (req, res) => {
   const { body, findUserIndex } = req;
   users[findUserIndex] = { id: users[findUserIndex].id, ...body };

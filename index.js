@@ -4,8 +4,16 @@ const routes = require("./routes/index");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const passport = require("passport");
+const mongoose = require("mongoose");
+
+const uri = `mongodb+srv://poorvashrivastav03:root@express.dzq36xk.mongodb.net/?retryWrites=true&w=majority&appName=express`;
 
 app.use(express.json());
+mongoose
+  .connect(uri)
+  .then(() => console.log("Connected to db"))
+  .catch((err) => console.log(err));
+
 app.use(cookieParser("signed")); //making the cookies signed
 app.use(
   session({
