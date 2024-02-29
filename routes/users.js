@@ -16,6 +16,8 @@ const {
 } = require("../utils/validationSchemas");
 
 const User = require("../mongoose/schemas/user");
+const { hashedPassword } = require("../utils/helpers");
+const passport = require("passport");
 
 router.get("/", checkSchema(createUserValidationSchemaGET), (req, res) => {
   const result = validationResult(req);
@@ -43,16 +45,6 @@ router.get("/:id", middlewareResolveIndexByUserId, (req, res) => {
   return res.send(findUser);
 });
 
-// router.post("/", checkSchema(createUserValidationSchemaPOST), (req, res) => {
-//   const result = validationResult(req);
-//   if (!result.isEmpty()) {
-//     return res.status(400).send({ errors: result.array() });
-//   }
-//   const data = matchedData(req);
-//   users.push({ id: users[users.length - 1].id + 1, ...data });
-//   res.sendStatus(201);
-// });
-
 router.post(
   "/",
   checkSchema(createUserValidationSchemaPOST),
@@ -60,10 +52,11 @@ router.post(
     const result = validationResult(req);
     if (!result.isEmpty()) return res.status(400).send({ err: result.array() });
     const data = matchedData(req);
-    console.log(data);
-    const newUser = new User(data);
+    data.password = hashedPassword(data.password);
+
+    const newUser = new User(data); //creating new row in the users table
     try {
-      const savedUser = await newUser.save();
+      const savedUser = await newUser.save(); //saving data to that row
       return res.status(201).send(savedUser);
     } catch (err) {
       console.log(err);

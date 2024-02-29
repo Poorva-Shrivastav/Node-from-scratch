@@ -192,4 +192,9 @@ The main role of this function is to: Validate user - user exists and password i
 1. Install mongoose
 2. connect mongoose to express with uri
 3. create schemas
-4. connect db to passport
+4. connect db to passport and verify the user - inside strategy - verification and deserializeUser functions.
+
+# bcrypt
+
+1. hash the password before saving with bcrypt.hash(pwd, salt)
+2. For comparing pwd saved in db with the password entered by the user, use the compare function - bcrypt.compare(inputPwd, dbPwd)

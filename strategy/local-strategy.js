@@ -3,6 +3,7 @@ const Strategy = require("passport-local");
 const users = require("../utils/constants");
 
 const User = require("../mongoose/schemas/user");
+const { comparePasswords } = require("../utils/helpers");
 
 passport.serializeUser((user, done) => {
   console.log("Inside serializeUser");
@@ -27,8 +28,10 @@ passport.deserializeUser(async (id, done) => {
 const strategy = new Strategy(async (username, password, done) => {
   try {
     const findUser = await User.findOne({ username });
+
     if (!findUser) throw new Error("User not found");
-    if (findUser.password !== password) throw new Error("Bad Credentials");
+    if (!comparePasswords(password, findUser.password))
+      throw new Error("Bad Credentials");
     done(null, findUser);
   } catch (err) {
     done(err, null);
