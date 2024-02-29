@@ -20,6 +20,15 @@ const { hashedPassword } = require("../utils/helpers");
 const passport = require("passport");
 
 router.get("/", checkSchema(createUserValidationSchemaGET), (req, res) => {
+  req.sessionStore.get(req.session.id, (err, sessionData) => {
+    if (err) {
+      console.log(err);
+      throw new Error();
+    }
+    console.log("Inside session store GET");
+    console.log(sessionData);
+  });
+
   const result = validationResult(req);
   if (!result.isEmpty()) {
     console.log(req.session.id);

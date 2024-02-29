@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const passport = require("passport");
 const mongoose = require("mongoose");
+const MongoStore = require("connect-mongo");
 
 const uri = `mongodb+srv://poorvashrivastav03:root@express.dzq36xk.mongodb.net/?retryWrites=true&w=majority&appName=express`;
 
@@ -23,6 +24,9 @@ app.use(
     cookie: {
       maxAge: 60000 * 60, //1 hr
     },
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+    }),
   })
 );
 

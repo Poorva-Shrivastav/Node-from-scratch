@@ -198,3 +198,13 @@ The main role of this function is to: Validate user - user exists and password i
 
 1. hash the password before saving with bcrypt.hash(pwd, salt)
 2. For comparing pwd saved in db with the password entered by the user, use the compare function - bcrypt.compare(inputPwd, dbPwd)
+
+# session store
+
+This helps in restoring the session, even after the server went down and the session is terminated.
+
+1. connected session to db with npm package - connect-mongo
+2. Inside index.js, where we are calling session middleware, add -
+   store: MongoStore.create({
+   client: mongoose.connection.getClient(),
+   }),
