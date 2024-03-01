@@ -183,6 +183,8 @@ Passport works really well with express-sessions and many people use both of the
 5. passport.serializeUser((user,done)=>{done(user.id)}) -> takes user obj that we validated and stores it in the session data //done takes the arguement that is unique.
 6. passport.deserializeUser((id,done)=>{})
 
+!! Basically when we call set done(null, user), we are telling passport to serialize this user object into the session data.
+
 # https://stackoverflow.com/questions/27637609/understanding-passport-serialize-deserialize
 
 The main role of this function is to: Validate user - user exists and password in req body and db are same

@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 const users = require("../utils/constants");
 const passport = require("passport");
-const strategy = require("../strategy/local-strategy");
+// const strategy = require("../strategy/local-strategy");
+const discordStrategy = require("../strategy/discord-strategy");
 
-passport.use(strategy);
+// passport.use(strategy);
+passport.use(discordStrategy);
 router.post("/", (req, res) => {
   const {
     body: { username, password },
@@ -46,4 +48,16 @@ router.post("/logout", (req, res) => {
     return res.sendStatus(200);
   });
 });
+
+router.get("/discord", passport.authenticate("discord"));
+
+router.get(
+  "/discord/redirect",
+  passport.authenticate("discord"),
+  (req, res) => {
+    console.log(req.session);
+    console.log(req.user);
+    return res.sendStatus(200);
+  }
+);
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 const routes = require("./routes/index");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -7,7 +8,7 @@ const passport = require("passport");
 const mongoose = require("mongoose");
 const MongoStore = require("connect-mongo");
 
-const uri = `mongodb+srv://poorvashrivastav03:root@express.dzq36xk.mongodb.net/?retryWrites=true&w=majority&appName=express`;
+const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@express.dzq36xk.mongodb.net/?retryWrites=true&w=majority&appName=express`;
 
 app.use(express.json());
 mongoose
