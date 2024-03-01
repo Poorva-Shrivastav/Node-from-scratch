@@ -208,3 +208,8 @@ This helps in restoring the session, even after the server went down and the ses
    store: MongoStore.create({
    client: mongoose.connection.getClient(),
    }),
+
+# login with discord
+
+1. go to discord.com and search for developers -> https://discord.com/developers/applications
+2.
